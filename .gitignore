@@ -3,6 +3,3 @@
 
 # Ignore dependencies
 node_modules
-
-# Ignore logs
-*.log
