@@ -1,24 +1,33 @@
 import "./Sidebar.css";
-function Sidebar(){
+function Sidebar() {
     return (
-        <section className="sidebar">
-        {/*new chat button*/}
-        <button>
-            <img src="src/assets/logo.jpg" alt="AI logo" className="logo"></img>
-            <span><i className="fa-solid fa-pen-to-square"></i></span>
-        </button>
-        {/*history*/}
-        <ul className="history">
-            <li>thread1</li>
-            <li>thread2</li>
-            <li>thread3</li>
-        </ul>
-        {/* sign*/}
-        <div className="sign">
-           <p>By Ashrith AI &hearts;</p>
+        <div className="sidebar">
+            {/* Logo Section */}
+            <div className="sidebar-header">
+                <div className="logo-container">
+                    <img src="src/assets/logo.jpg" alt="AI Logo" className="logo-img" /> 
+                </div>
+                <button className="new-chat-btn">
+                    <i className="fa-solid fa-plus"></i>
+                    <span>New Chat</span>
+                </button>
+            </div>
+
+            {/* Chat History Section */}
+            <div className="history">
+                <ul>
+                    <li><i className="fa-regular fa-message"></i> Sample Thread 1</li>
+                    <li><i className="fa-regular fa-message"></i> Sample Thread 2</li>
+                    <li><i className="fa-regular fa-message"></i> Sample Thread 3</li>
+                </ul>
+            </div>
+
+            {/* Footer */}
+            <div className="sign">
+                <i className="fa-solid fa-right-from-bracket"></i> Sign Out
+            </div>
         </div>
-        </section>
-    )
+    );
 }
 
 export default Sidebar;

@@ -4,66 +4,69 @@ import dotenv from "dotenv";
 import mongoose from "mongoose";
 import cors from "cors";
 import chatRoutes from "./routes/chat.js";
+
 dotenv.config();
 
-
 const app = express();
-const PORT=8000;
+const PORT = 8000;
+
+// ✅ Middlewares
 app.use(express.json());
-app.use(cors());
+app.use(cors({
+    origin: "http://localhost:5173",  // your React dev server URL
+    methods: ["GET", "POST", "DELETE"],
+    allowedHeaders: ["Content-Type"]
+}));
 
-app.use("/api",chatRoutes);
 
+// ✅ Test route
+app.get("/", (req, res) => {
+    res.send("✅ Server is running!");
+});
+
+// ✅ API routes
+app.use("/api", chatRoutes);
+
+// ✅ Connect Database and Start Server
 const connectDB = async () => {
-  try {
-    await mongoose.connect(process.env.MONGODB_URI);
-    console.log("Connected with Database!");
-    
-    // Start server ONLY after DB connects
-    app.listen(PORT, () => {
-      console.log(`Server running on http://localhost:${PORT}`);
-    });
-  } catch (err) {
-    console.log("Failed to connect with Db", err);
-    process.exit(1); // Kill server if DB connection fails
-  }
+    console.log("⏳ Starting server...");
+
+    try {
+        if (!process.env.MONGODB_URI) {
+            console.warn("⚠️ MONGODB_URI not found. Skipping database connection.");
+        } else {
+            console.log("🔗 Connecting to MongoDB...");
+            await mongoose.connect(process.env.MONGODB_URI, {
+                useNewUrlParser: true,
+                useUnifiedTopology: true
+            });
+            console.log("✅ Connected to MongoDB!");
+        }
+
+        // ✅ Start Express server
+        app.listen(PORT, "0.0.0.0", () => {
+            console.log(`🚀 Server is running on http://localhost:${PORT}`);
+        });
+
+    } catch (err) {
+        console.error("❌ Database connection failed:", err.message);
+        console.log("⚠️ Starting server without database...");
+
+        // ✅ Start server even if DB fails
+        app.listen(PORT, "0.0.0.0", () => {
+            console.log(`🚀 Server running without DB on http://localhost:${PORT}`);
+        });
+    }
 };
 
-connectDB(); // 🔁 Now called before listen
+// ✅ Catch unhandled errors (prevents silent exit)
+process.on("uncaughtException", (err) => {
+    console.error("❌ Uncaught Exception:", err);
+});
 
-// app.post("/test", async (req, res) => {
-//   const options = {
-//     method: "POST",
-//     headers: {
-//       "Content-Type": "application/json",
-//       "x-goog-api-key": process.env.GEMINI_API_KEY
-//     },
-//     body: JSON.stringify({
-//       contents: [
-//         {
-//           role: "user",
-//           parts: [{ text: req.body.message }]
-//         }
-//       ]
-//     })
-//   };
+process.on("unhandledRejection", (err) => {
+    console.error("❌ Unhandled Rejection:", err);
+});
 
-// try {
-//   const response = await fetch(
-//     "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent",
-//     options
-//   );
-  
-//   const data = await response.json();
-  
-//   // Gemini returns data in a different structure
-//   const reply = data.candidates?.[0]?.content?.parts?.[0]?.text || "No response";
-
-//   console.log(reply); // reply
-//   res.send(reply);     // send to frontend
-// } 
-// catch (err) {
-//   console.log(err);
-//   res.status(500).send("Error connecting to Gemini API");
-// }
-// });
+// Start
+connectDB();

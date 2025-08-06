@@ -1,0 +1,90 @@
+.chats {
+    max-width: 700px;
+    margin: auto;
+    padding: 2rem 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    overflow-y: auto;
+    height: 65vh;
+    position: relative; /* ✅ required for overlay positioning */
+    scroll-behavior: smooth;
+}
+
+/* "Start Chat" Text */
+.start-chat-text {
+    text-align: center;
+    margin-bottom: 1rem;
+    color: #333;
+}
+
+/* User message */
+.userDiv {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.userMessage {
+    background-color: #4cafef;
+    color: white;
+    padding: 12px 18px;
+    border-radius: 18px 18px 4px 18px;
+    max-width: 60%;
+    word-wrap: break-word;
+    font-size: 0.95rem;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+/* AI message */
+.aiDiv {
+    display: flex;
+    justify-content: flex-start;
+}
+
+.aiMessage {
+    background-color: #f1f1f1;
+    color: #222;
+    padding: 12px 18px;
+    border-radius: 18px 18px 18px 4px;
+    max-width: 60%;
+    word-wrap: break-word;
+    font-size: 0.95rem;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+}
+
+/* Loader Overlay (centered like GPT) */
+.loader-overlay {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.8);
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Loader Animation */
+.loader {
+    width: 50px;
+    height: 50px;
+    border: 5px solid #ccc;
+    border-top: 5px solid #4cafef;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+.loading-text {
+    margin-top: 10px;
+    font-size: 14px;
+    color: #333;
+    font-weight: 500;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
