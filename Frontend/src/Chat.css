@@ -1,90 +1,103 @@
-.chats {
-    max-width: 700px;
-    margin: auto;
-    padding: 2rem 1rem;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    overflow-y: auto;
-    height: 65vh;
-    position: relative; /* ✅ required for overlay positioning */
-    scroll-behavior: smooth;
+/* Container wrapping the whole chat */
+.chat-container {
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  height: 100%;
+  overflow-y: auto;
+  background-color: #ffffff; /* Clean light background */
+  color: #000000; /* Default dark text */
 }
 
-/* "Start Chat" Text */
+/* When chat starts and no previous messages */
 .start-chat-text {
-    text-align: center;
-    margin-bottom: 1rem;
-    color: #333;
+  text-align: center;
+  color: #888;
+  font-size: 1.2rem;
+  margin-top: 50px;
 }
 
-/* User message */
+/* Container for the chat bubbles */
+.chats {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* User message styling */
 .userDiv {
-    display: flex;
-    justify-content: flex-end;
+  align-self: flex-end;
+  background-color: #6C63FF;
+  color: #000;
+  padding: 12px 18px;
+  border-radius: 16px;
+  max-width: 70%;
+  word-wrap: break-word;
+  font-size: 1rem;
 }
 
-.userMessage {
-    background-color: #4cafef;
-    color: white;
-    padding: 12px 18px;
-    border-radius: 18px 18px 4px 18px;
-    max-width: 60%;
-    word-wrap: break-word;
-    font-size: 0.95rem;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+/* AI static reply */
+.gptDiv {
+  align-self: flex-start;
+  background-color: #f9f9fb; /* Updated for better contrast */
+  color: #1c1c1e;
+  padding: 16px 20px;
+  border-radius: 16px;
+  max-width: 75%;
+  font-size: 1rem;
+  white-space: pre-wrap;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05); /* subtle depth */
+  line-height: 1.6;
 }
 
-/* AI message */
+/* AI typing effect reply */
 .aiDiv {
-    display: flex;
-    justify-content: flex-start;
+  align-self: flex-start;
+  background-color: #f5f6fa;
+  color: #1c1c1e;
+  padding: 16px 20px;
+  border-radius: 16px;
+  max-width: 75%;
+  white-space: pre-wrap;
+  font-style: italic;
+  font-size: 1rem;
+  line-height: 1.6;
 }
 
-.aiMessage {
-    background-color: #f1f1f1;
-    color: #222;
-    padding: 12px 18px;
-    border-radius: 18px 18px 18px 4px;
-    max-width: 60%;
-    word-wrap: break-word;
-    font-size: 0.95rem;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+/* Markdown - inline code */
+code {
+  background-color: #eef1f4;
+  color: #d6336c;
+  padding: 2px 6px;
+  border-radius: 6px;
+  font-family: Consolas, monospace;
+  font-size: 0.95rem;
 }
 
-/* Loader Overlay (centered like GPT) */
-.loader-overlay {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    background: rgba(255, 255, 255, 0.8);
-    padding: 20px;
-    border-radius: 12px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+/* Markdown - code blocks */
+pre {
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 16px;
+  overflow-x: auto;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  margin-top: 12px;
+  white-space:pre-wrap;
 }
 
-/* Loader Animation */
-.loader {
-    width: 50px;
-    height: 50px;
-    border: 5px solid #ccc;
-    border-top: 5px solid #4cafef;
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
+/* Code inside pre */
+pre code {
+  display: block;
+  color: #1e1e1e;
 }
 
-.loading-text {
-    margin-top: 10px;
-    font-size: 14px;
-    color: #333;
-    font-weight: 500;
+/* Scrollbar styling */
+.chat-container::-webkit-scrollbar {
+  width: 8px;
 }
-
-@keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+.chat-container::-webkit-scrollbar-thumb {
+  background-color: #ccc;
+  border-radius: 4px;
 }

@@ -3,18 +3,20 @@ html, body {
   padding: 0;
   height: 100%;
   width: 100%;
-  background-color: #212121; /* Make full page dark */
+  background-color: #212121;
+  overflow: hidden; /* 🚫 Prevent scrolling */
+  touch-action: none; /* 🚫 Prevent drag overscroll on mobile */
 }
 
 #root {
-  margin: 0;
-  padding: 0;
-  max-width: 100%; /* Allow full width */
+  height: 100%;
+  width: 100%;
 }
 
 .app {
   background-color: #212121;
   display: flex;
   width: 100%;
-  min-height: 100vh; /* Fill full screen height */
+  height: 100vh; /* Exactly full viewport height */
+  overflow: hidden;
 }

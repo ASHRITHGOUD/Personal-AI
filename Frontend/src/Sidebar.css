@@ -120,3 +120,39 @@
     object-fit: contain;
     border-radius: 8px;
 }
+.history-section {
+  padding: 10px 14px;
+  overflow-y: auto;
+  max-height: 70vh;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.thread-item {
+  background-color: #f1f1f1;
+  padding: 10px 12px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.thread-item:hover {
+  background-color: #e0e0ff;
+}
+
+.thread-title {
+  font-size: 0.95rem;
+  color: #222;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 150px;
+}
+
+.icon {
+  color: #5a5a5a;
+}
