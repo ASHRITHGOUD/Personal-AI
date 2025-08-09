@@ -8,6 +8,7 @@ function ChatWindow() {
     const { prompt, setPrompt, setReply, currThreadId, prevChats, setPrevChats } = useContext(MyContext);
     const [loading, setLoading] = useState(false);
     const [errorMsg, setErrorMsg] = useState("");
+    const[isOpen,setIsOpen]=useState(false);//set default false value
 
     const API_BASE = "http://localhost:8000/api";
 
@@ -50,6 +51,10 @@ function ChatWindow() {
         }
     };
 
+const handleProfileClick=()=>{
+    setIsOpen(!isOpen);
+}
+
     return (
         <div className="chatWindow">
             {/* ✅ Navbar */}
@@ -61,12 +66,20 @@ function ChatWindow() {
                         <i className="fa-solid fa-chevron-down dropdown-icon"></i>
                     </span>
                 </div>
-                <div className="userIconDiv">
+                <div className="userIconDiv" onClick={handleProfileClick}>
                     <span className="userIcon">
                         <i className="fa-solid fa-user"></i>
                     </span>
                 </div>
             </div>
+            {
+                isOpen &&
+                <div className="dropDown">
+                     <div className="dropDownItem"><i class="fa-solid fa-gear"></i>Settings</div>
+                     <div className="dropDownItem"><i class="fa-solid fa-cloud-arrow-up"></i>Upgrade</div>
+                      <div className="dropDownItem"><i class="fa-solid fa-arrow-right-from-bracket"></i>Log out</div>
+                </div>
+            }
 
             {/* ✅ Chat Area */}
             <div className="chatArea">

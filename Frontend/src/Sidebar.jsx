@@ -56,6 +56,22 @@ function Sidebar() {
 };
 
 
+//delete
+const deleteThread=async(threadId)=>{
+   try{
+    const response=await fetch(`http://localhost:8000/api/thread/${threadId}`,{method:"DELETE"});
+    const res=await response.json();
+    console.log(res);
+    //updated
+    setAllThreads(prev=>prev.filter(thread=>thread.threadId!==threadId));
+    if(threadId==currThreadId){
+      createNewChat();
+    }
+   }catch(err){
+    console.log(err);
+   }
+}
+
     return (
         <div className="sidebar">
             {/* Logo Section */}
@@ -68,21 +84,31 @@ function Sidebar() {
                     <span>New Chat</span>
                 </button>
             </div>
-
-            {/* Chat History Section */}
+            {/*chat History*/}
             <div className="history-section">
   {allThreads?.map((thread, idx) => (
-    <div key={idx} onClick={(e)=>changeThread(thread.threadId)} className="thread-item">
+    <div 
+      key={idx} 
+      className={`thread-item ${currThreadId === thread.threadId ? 'highlighted' : ''}`}
+      onClick={() => changeThread(thread.threadId)}
+    >
       <i className="fa-regular fa-comments icon"></i>
       <span className="thread-title" title={thread.title}>{thread.title}</span>
+      
+      {/* Delete icon */}
+      <i 
+        className="fa-solid fa-trash"
+        onClick={(e) => {
+          e.stopPropagation();
+          deleteThread(thread.threadId);
+        }}
+      ></i>
     </div>
   ))}
 </div>
-
-
             {/* Footer */}
             <div className="sign">
-                <i className="fa-solid fa-right-from-bracket"></i> Sign Out
+               By ASH&hearts;
             </div>
         </div>
     );
