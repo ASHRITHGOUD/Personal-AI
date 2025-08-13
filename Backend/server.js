@@ -8,12 +8,15 @@ import chatRoutes from "./routes/chat.js";
 dotenv.config();
 
 const app = express();
-const PORT = 8000;
+// MODIFIED: Use the port provided by the hosting environment, or default to 8000
+const PORT = process.env.PORT || 8000; 
 
 // ✅ Middlewares
 app.use(express.json());
 app.use(cors({
-    origin: "http://localhost:5173",  // your React dev server URL
+    // MODIFIED: In production, allow requests from all origins
+    // or use your specific frontend URL if you want tighter security.
+    origin: "*", 
     methods: ["GET", "POST", "DELETE"],
     allowedHeaders: ["Content-Type"]
 }));
@@ -36,10 +39,8 @@ const connectDB = async () => {
             console.warn("⚠️ MONGODB_URI not found. Skipping database connection.");
         } else {
             console.log("🔗 Connecting to MongoDB...");
-            await mongoose.connect(process.env.MONGODB_URI, {
-                useNewUrlParser: true,
-                useUnifiedTopology: true
-            });
+            // MODIFIED: useNewUrlParser and useUnifiedTopology are no longer needed
+            await mongoose.connect(process.env.MONGODB_URI); 
             console.log("✅ Connected to MongoDB!");
         }
 
