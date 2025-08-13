@@ -8,9 +8,10 @@ function ChatWindow() {
     const { prompt, setPrompt, setReply, currThreadId, prevChats, setPrevChats } = useContext(MyContext);
     const [loading, setLoading] = useState(false);
     const [errorMsg, setErrorMsg] = useState("");
-    const[isOpen,setIsOpen]=useState(false);//set default false value
+    const [isOpen, setIsOpen] = useState(false); // set default false value
 
-    const API_BASE = "http://localhost:8000/api";
+    // MODIFIED: Use the environment variable
+    const API_BASE = import.meta.env.VITE_API_URL;
 
     const getReply = async () => {
         if (!prompt.trim() || loading) return;
@@ -51,9 +52,9 @@ function ChatWindow() {
         }
     };
 
-const handleProfileClick=()=>{
-    setIsOpen(!isOpen);
-}
+    const handleProfileClick = () => {
+        setIsOpen(!isOpen);
+    }
 
     return (
         <div className="chatWindow">
@@ -75,9 +76,9 @@ const handleProfileClick=()=>{
             {
                 isOpen &&
                 <div className="dropDown">
-                     <div className="dropDownItem"><i class="fa-solid fa-gear"></i>Settings</div>
-                     <div className="dropDownItem"><i class="fa-solid fa-cloud-arrow-up"></i>Upgrade</div>
-                      <div className="dropDownItem"><i class="fa-solid fa-arrow-right-from-bracket"></i>Log out</div>
+                    <div className="dropDownItem"><i className="fa-solid fa-gear"></i>Settings</div>
+                    <div className="dropDownItem"><i className="fa-solid fa-cloud-arrow-up"></i>Upgrade</div>
+                    <div className="dropDownItem"><i className="fa-solid fa-arrow-right-from-bracket"></i>Log out</div>
                 </div>
             }
 
