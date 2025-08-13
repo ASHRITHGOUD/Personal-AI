@@ -8,9 +8,9 @@ function ChatWindow() {
     const { prompt, setPrompt, setReply, currThreadId, prevChats, setPrevChats } = useContext(MyContext);
     const [loading, setLoading] = useState(false);
     const [errorMsg, setErrorMsg] = useState("");
-    const [isOpen, setIsOpen] = useState(false); // set default false value
+    const [isOpen, setIsOpen] = useState(false);
 
-    // MODIFIED: Use the environment variable
+    // ✅ Use the environment variable
     const API_BASE = import.meta.env.VITE_API_URL;
 
     const getReply = async () => {
@@ -20,8 +20,8 @@ function ChatWindow() {
         setErrorMsg("");
 
         try {
-            // ✅ Send message to backend
-            const response = await fetch(`${API_BASE}/chat`, {
+            // ✅ Send message to backend with correct '/api' prefix
+            const response = await fetch(`${API_BASE}/api/chat`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ message: prompt, threadId: currThreadId }),
@@ -39,10 +39,7 @@ function ChatWindow() {
                 { role: "assistant", content: res.reply }
             ]);
 
-            // ✅ Store the latest reply
             setReply(res.reply);
-
-            // ✅ Clear the input
             setPrompt("");
         } catch (err) {
             console.error("❌ Chat Request Failed:", err.message);
@@ -58,7 +55,6 @@ function ChatWindow() {
 
     return (
         <div className="chatWindow">
-            {/* ✅ Navbar */}
             <div className="navbar">
                 <div className="navbar-left">
                     <img src="src/assets/logo.jpg" alt="Logo" className="navbar-logo" />
@@ -73,16 +69,14 @@ function ChatWindow() {
                     </span>
                 </div>
             </div>
-            {
-                isOpen &&
+            {isOpen && (
                 <div className="dropDown">
                     <div className="dropDownItem"><i className="fa-solid fa-gear"></i>Settings</div>
                     <div className="dropDownItem"><i className="fa-solid fa-cloud-arrow-up"></i>Upgrade</div>
                     <div className="dropDownItem"><i className="fa-solid fa-arrow-right-from-bracket"></i>Log out</div>
                 </div>
-            }
+            )}
 
-            {/* ✅ Chat Area */}
             <div className="chatArea">
                 <Chat />
                 {loading && (
@@ -93,7 +87,6 @@ function ChatWindow() {
                 )}
             </div>
 
-            {/* ✅ Chat Input */}
             <div className="chatInput">
                 <input
                     type="text"
@@ -116,10 +109,8 @@ function ChatWindow() {
                 </button>
             </div>
 
-            {/* ✅ Error Message */}
             {errorMsg && <p className="info" style={{ color: "red" }}>{errorMsg}</p>}
 
-            {/* ✅ Info Text */}
             <p className="info">
                 ⚠️ PersonalAI can make mistakes. Check important info. See Cookie Preferences.
             </p>
