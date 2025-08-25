@@ -1,26 +1,22 @@
 import express from "express";
 import fetch from "node-fetch";
 import dotenv from "dotenv";
-import mongoose from "mongoose";
 import cors from "cors";
 import chatRoutes from "./routes/chat.js";
+import memoryManager from "./services/memory_manager.js"; 
 
 dotenv.config();
 
 const app = express();
-// MODIFIED: Use the port provided by the hosting environment, or default to 8000
 const PORT = process.env.PORT || 8000; 
 
 // ✅ Middlewares
 app.use(express.json());
 app.use(cors({
-    // MODIFIED: In production, allow requests from all origins
-    // or use your specific frontend URL if you want tighter security.
     origin: "*", 
     methods: ["GET", "POST", "DELETE"],
     allowedHeaders: ["Content-Type"]
 }));
-
 
 // ✅ Test route
 app.get("/", (req, res) => {
@@ -30,19 +26,13 @@ app.get("/", (req, res) => {
 // ✅ API routes
 app.use("/api", chatRoutes);
 
-// ✅ Connect Database and Start Server
-const connectDB = async () => {
+// ✅ Start server and connect DBs
+const startServer = async () => {
     console.log("⏳ Starting server...");
 
     try {
-        if (!process.env.MONGODB_URI) {
-            console.warn("⚠️ MONGODB_URI not found. Skipping database connection.");
-        } else {
-            console.log("🔗 Connecting to MongoDB...");
-            // MODIFIED: useNewUrlParser and useUnifiedTopology are no longer needed
-            await mongoose.connect(process.env.MONGODB_URI); 
-            console.log("✅ Connected to MongoDB!");
-        }
+        // 🔹 Initialize Redis + MongoDB (via memory_manager)
+        await memoryManager.init();
 
         // ✅ Start Express server
         app.listen(PORT, "0.0.0.0", () => {
@@ -50,8 +40,8 @@ const connectDB = async () => {
         });
 
     } catch (err) {
-        console.error("❌ Database connection failed:", err.message);
-        console.log("⚠️ Starting server without database...");
+        console.error("❌ Initialization failed:", err.message);
+        console.log("⚠️ Starting server without DB...");
 
         // ✅ Start server even if DB fails
         app.listen(PORT, "0.0.0.0", () => {
@@ -70,4 +60,4 @@ process.on("unhandledRejection", (err) => {
 });
 
 // Start
-connectDB();
+startServer();

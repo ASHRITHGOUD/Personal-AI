@@ -1,78 +1,32 @@
+// Backend/routes/chat.js
+import memoryManager from "../services/memory_manager.js";
 import express from "express";
 import Thread from "../models/Thread.js";
 import getGeminiAIResponse from "../utils/geminiai.js";
 
 const router = express.Router();
 
-// ✅ Test Route
-router.post("/test", async (req, res) => {
-    try {
-        const thread = new Thread({
-            threadId: "xyz",
-            title: "testing new Thread"
-        });
-
-        await thread.save();
-        res.status(201).json({ message: "Thread saved successfully", thread });
-    } catch (err) {
-        console.log(err);
-        res.status(500).json({ error: "Failed to save in DB" });
-    }
-});
-
-// ✅ Get all threads
-router.get("/thread", async (req, res) => {
-    try {
-        const threads = await Thread.find({}).sort({ updatedAt: -1 });
-        res.json(threads);
-    } catch (err) {
-        console.log(err);
-        res.status(500).json({ error: "Failed to fetch threads" });
-    }
-});
-
-// ✅ Get messages from a specific thread
-router.get("/thread/:threadId", async (req, res) => {
-    const { threadId } = req.params;
-    try {
-        const thread = await Thread.findOne({ threadId });
-        if (!thread) {
-            return res.status(404).json({ error: "Thread not found" });
-        }
-        res.json(thread.messages);
-    } catch (err) {
-        console.log(err);
-        res.status(500).json({ error: "Failed to fetch chat" });
-    }
-});
-
-// ✅ Delete a thread
-router.delete("/thread/:threadId", async (req, res) => {
-    const { threadId } = req.params;
-    try {
-        const deletedThread = await Thread.findOneAndDelete({ threadId });
-        if (!deletedThread) {
-            return res.status(404).json({ error: "Thread not found" });
-        }
-        res.status(200).json({ success: "Thread deleted successfully" });
-    } catch (err) {
-        console.log(err);
-        res.status(500).json({ error: "Failed to delete chat" });
-    }
-});
-
 // ✅ Send message and get AI reply
 router.post("/chat", async (req, res) => {
-    const { threadId, message } = req.body;
+    const { threadId, message, userId } = req.body;
 
-    if (!threadId || !message) {
-        return res.status(400).json({ error: "Missing required fields" });
+    if (!threadId || !message || !userId) {
+        return res.status(400).json({ error: "Missing required fields (threadId, message, userId)" });
     }
 
     try {
-        let thread = await Thread.findOne({ threadId });
+        // 🗂 Load STM and LTM
+        const stmMessages = await memoryManager.getSTM(userId);
+        const ltmDocs = await memoryManager.getLTM(userId);
 
-        // Create new thread if it doesn't exist
+        // 📝 Combine both into a single context string
+        const context = memoryManager.composeContext(stmMessages, ltmDocs);
+
+        // 💬 Get AI response using the combined context
+        const assistantReply = await getGeminiAIResponse(`${context}\nUser: ${message}`);
+
+        // 💾 Save in Thread model
+        let thread = await Thread.findOne({ threadId });
         if (!thread) {
             thread = new Thread({
                 threadId,
@@ -82,14 +36,12 @@ router.post("/chat", async (req, res) => {
         } else {
             thread.messages.push({ role: "user", content: message });
         }
-
-        // Get AI response
-        const assistantReply = await getGeminiAIResponse(message);
-
         thread.messages.push({ role: "assistant", content: assistantReply });
         thread.updatedAt = new Date();
-
         await thread.save();
+
+        // 🧠 Save to both STM & LTM
+        await memoryManager.saveBoth(userId, message, assistantReply);
 
         res.json({ reply: assistantReply });
     } catch (err) {
